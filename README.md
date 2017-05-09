@@ -9,7 +9,7 @@
 * 查看上面的`url`看一下每一个请求在需要什么*必要*的参数，结构如何
 * 可以通过在命令加上`--debug` 查看所需要参数
   如：
-```
+```bash
   $ openstack --debug service show 03920a98030d444fa4a0dd802a8b6b84
   ....
   REQ: curl -g -i -X GET http://controller01:35357/v3/services/03920a98030d444fa4a0dd802a8b6b84 -H "User-Agent: python-keystoneclient" -H "Accept: application/json" -H "X-Auth-Token: {SHA1}6b28ed9cfb0498654fd528d780f1fad68cdcc5c0"
