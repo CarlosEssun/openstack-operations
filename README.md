@@ -20,8 +20,9 @@
 
 # 使用示例
 1. 获取`token`
-```
-      def get_token():
+```python
+
+      def get_token():
         auth = {
             "auth": {
                 "identity": {
@@ -47,7 +48,8 @@
 	  loger.error(e)
 ```
 2. 获得带有区域的`token`之前必须要找到对应`project id`
-```
+```python
+
 	 def get_project_id( _token):
 	 try:
 	    if isinstance(_token, str):
@@ -67,7 +69,8 @@
 	    settings.LOGGER.error(e)
 ```
 3. 当使用带有project id 的区域认证时，就可以取到`catalog`
-```
+```python
+
       def get_catalog(self, *args, **kwargs):
         auth = {
             "auth": {
