@@ -19,4 +19,87 @@
 ```
 
 # 使用示例
+1. 获取`token`
+```
+      def get_token():
+        auth = {
+            "auth": {
+                "identity": {
+                    "methods": ["password"],
+                    "password": {
+                        "user": {"name": self.__user,
+                                 "domain": {"name": self.__domain},
+                                 "password": self.__password
+                                 }
+                    }
+                }
+            }
+        }
+        params = json.dumps(auth)
+        try:
+            headers = {"Content-type": "application/json", "Accept": "application/json;charset=UTF-8"}
+            __url = self.__url + settings.AUTH_PRE
+            req = urllib2.Request(__url, params, headers)
+            response = urllib2.urlopen(req, timeout=10)
+            token = response.info().getheader("X-Subject-Token")
+            return token
+	except Exception as e：
+	  loger.error(e)
+```
+2. 获得带有区域的`token`之前必须要找到对应`project id`
+```
+	 def get_project_id( _token):
+	 try:
+	    if isinstance(_token, str):
+		headers = {"Content-type": "application/json",
+			   "Accept": "application/json;charset=UTF-8",
+			   "X-Auth-Token": _token,
+			   'User-Agent': 'Mozilla/5.0 (Windows; U; Windows NT 6.1; en-US; rv:1.9.1.6) '
+					 'Gecko/20091201 Firefox/3.5.6'
+			   }
+		__url = self.__url + settings.PROJECT_PRE
+		response = requests.get(__url, headers=headers)
+		res_json = response.json()
+		return res_json['projects'][0]['id']
+	    else:
+		settings.LOGGER.error("get token at {} operation failed ".format(inspect.stack()[1][3]))
+	 except Exception as e:
+	    settings.LOGGER.error(e)
+```
+3. 当使用带有project id 的区域认证时，就可以取到`catalog`
+```
+      def get_catalog(self, *args, **kwargs):
+        auth = {
+            "auth": {
+                "identity": {
+                    "methods": ["password"],
+                    "password": {
+                        "user": {"id": kwargs.get('id', ''),
+                                 "password": self.__password
+                                 }
+                    }
+                },
+                "scope": {
+                    "project": {
+                        "id": kwargs.get('project_id', '')
+                    }
+                }
+            }
+        }
+        data = json.dumps(auth)
+        headers = {"Content-type": "application/json", "Accept": "application/json;charset=UTF-8"}
+        __url = self.__url + settings.AUTH_PRE
+        try:
+            req = urllib2.Request(__url, data, headers=headers)
+            response = urllib2.urlopen(req, timeout=10)
+            token = response.info().getheader("X-Subject-Token")
+            response.encoding = 'utf-8'
+            response_json = json.loads(response.read())
+            response_json = self.__byteify(response_json)
+            response_json['authtoken'] = token
+            # print response_json
+            return response.getcode(), response_json
+        except Exception as e:
+            settings.LOGGER.error(e)
 
+```
